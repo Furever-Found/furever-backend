@@ -69,7 +69,7 @@ The way to retrieve pets is through the `def GetPets(self)` method.
 
 The `ClsPetOwners` asset can be created with the following command:
 
-`time python3 sagapythonclasses.py ../furever-backend/classclsshelter.py `
+`time python3 sagapythonclasses.py ../furever-backend/classclspetowner.py `
 
 The expected response would be something like :
 
@@ -80,3 +80,9 @@ The expected response would be something like :
 Until the account/asset explanations are in place, the current way to add a pet to an owner would be through the `AddPet(self, petId: str)` method.
 
 The way to retrieve pets is through the `def GetPets(self)` method.
+
+##Logging
+
+Logging has been used in every class to examine the data that is being processed; currently, everything gets saved to the
+default file (established by `PraSaga`, in the `SagaPython` folder), and named `sptransactionlog.txt`. Logs can be examined after every execution.
+This file will get re-initialized after every run.

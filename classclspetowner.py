@@ -94,7 +94,7 @@ def __body():
     # make the objvar persistent by inserting it in the account list
     # acctvar.Insert(objvar)    # also sets owner field of objvar
 
-    log(objvar.GetName(), " adopted : ", objvar.GetPets())
+    Log(objvar.GetName(), " adopted : ", objvar.GetPets())
 
     return True
 
