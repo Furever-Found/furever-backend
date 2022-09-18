@@ -1,8 +1,8 @@
 # furever-backend
 
-Back-end SagaPython code
+Back-end SagaPython code for the **Furever Found** web3athon submission.
 
-##Summary
+## Summary
 This repo is the starting point for developing Accounts and Assets for the Furever Found project.
 
 Much of the code written here relies on the fact that saga python is a pre-alpha repo. Most version of th code do not compile;
@@ -81,7 +81,7 @@ Until the account/asset explanations are in place, the current way to add a pet 
 
 The way to retrieve pets is through the `def GetPets(self)` method.
 
-##Logging
+## Logging
 
 Logging has been used in every class to examine the data that is being processed; currently, everything gets saved to the
 default file (established by `PraSaga`, in the `SagaPython` folder), and named `sptransactionlog.txt`. Logs can be examined after every execution.
