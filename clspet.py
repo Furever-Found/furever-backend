@@ -1,5 +1,4 @@
-# Creating a generic asset class
-# This will be a foundation class, but this is a rough example of it
+# Creating an asset class representing a pet;
 # By default, class objects are owned by a global account object
 # Class objects may be created, and owned by other accounts
 # usefulness is questionable
@@ -18,18 +17,15 @@ def __CMIClasses():
 
     # no signature required for creating global classes
     @SagaClass(CMIConst.SPClassObject)
-    class ClsShelter:
+    class ClsPet:
 
         SagaFieldTable = []       # no user visible fields
 
         @SagaMethod()
-        def __init__(self, name: str, address: str, description: str, initcount: int):
+        def __init__(self, name: str, initcount: int):
             self.assetcount = initcount  # internal instance variable
             self.name = name
-            self.address = address
-            self.description = description
             self.callcounter = 0
-            self.pets = []
 
         @SagaMethod()
         def Increment(self, inc: int):
@@ -49,55 +45,40 @@ def __CMIClasses():
             return self.assetcount
 
         @SagaMethod()
-        def GetAddress(self):
-            return self.address
-
-        @SagaMethod()
         def GetName(self):
             return self.name
 
         @SagaMethod()
-        def GetDescription(self):
-            return self.description
-
-        # TODO: once adding an asset to an account is clear, we will be able to link the pet to a shelter by ID
-        # until then, we're simply storing a list of petIDs.
-        @SagaMethod()
-        def AddPet(self, petId: str):
-            self.pets.append(petId)
+        def GetSpecies(self):
+            return self.species
 
         @SagaMethod()
-        def GetPets(self):
-            return self.pets
+        def SetSpecies(self, species: str):
+            self.species = species
 
         # internal method - example simply counts number of calls
+
         def callcount(self):
             self.callcounter += 1
 
 
 def __body():
 
-    # The name ClsShelter is only available to the transaction script
+    # The name ClsPet is only available to the transaction script
     # The objectID must be retrieved if the intent is to use the class
     # log it for user to recover it, could also store it in another object
-    Log("Class ClsShelter LOID: ", ClsShelter.oid)
+    Log("Class ClsPet LOID: ", ClsPet.oid)
 
     # An instance of the new class can be instantiated
-    classvar = ClsObjVar(ClsShelter)
+    classvar = ClsObjVar(ClsPet)
 
-    # initialized with 1 count of asset
-    # Shelters and Owners should be instantiated as accounts, but no clear examples exist of how to instantiate / declare one.
-    objloid = classvar.new(CMIConst.SPSystemAccount,
-                           "San Mateo Shelter", "123 Main Street, San Mateo, CA",
-                           "This is a description of a nice shelter in San Mateo",
-                           1)
+    # initialized with 100 count of asset
+    objloid = classvar.new(CMIConst.SPSystemAccount, "Whiskers", 1)
     objloid = objloid[0]
-    #objloid1 = objloid[1]
-    Log("ClsShelter Object Instance: ", objloid.oid)
-
-    #Log("ClsShelter Object Instance: ", objloid1.oid)
+    Log("ClsPet Object Instance: ", objloid.oid)
 
     objvar = ClsObjVar(objloid)
+    objvar.SetSpecies("cat")
 
     try:
         # illegal increment the local callcounter variable. callcount is internal only
@@ -105,17 +86,10 @@ def __body():
     except:
         pass
 
-    #count = objvar.Increment(10)
-    #Log("Increment Count: ", count)
-
-    objvar.AddPet("Whiskers1")
-    objvar.AddPet("Sparky")
-    objvar.AddPet("Fluffy")
+    Log("Name: ", objvar.GetName(), ", species: ", objvar.GetSpecies())
 
     # make the objvar persistent by inserting it in the account list
     # acctvar.Insert(objvar)    # also sets owner field of objvar
-
-    Log("the pets at shelter ", objvar.GetName(), "are : ", objvar.GetPets())
 
     return True
 

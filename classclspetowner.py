@@ -1,4 +1,3 @@
-# Creating a generic asset class
 # This will be a foundation class, but this is a rough example of it
 # By default, class objects are owned by a global account object
 # Class objects may be created, and owned by other accounts
@@ -18,16 +17,15 @@ def __CMIClasses():
 
     # no signature required for creating global classes
     @SagaClass(CMIConst.SPClassObject)
-    class ClsShelter:
+    class ClsPetOwner:
 
         SagaFieldTable = []       # no user visible fields
 
         @SagaMethod()
-        def __init__(self, name: str, address: str, description: str, initcount: int):
+        def __init__(self, name: str, address: str, initcount: int):
             self.assetcount = initcount  # internal instance variable
             self.name = name
             self.address = address
-            self.description = description
             self.callcounter = 0
             self.pets = []
 
@@ -56,12 +54,9 @@ def __CMIClasses():
         def GetName(self):
             return self.name
 
-        @SagaMethod()
-        def GetDescription(self):
-            return self.description
-
         # TODO: once adding an asset to an account is clear, we will be able to link the pet to a shelter by ID
         # until then, we're simply storing a list of petIDs.
+
         @SagaMethod()
         def AddPet(self, petId: str):
             self.pets.append(petId)
@@ -77,45 +72,29 @@ def __CMIClasses():
 
 def __body():
 
-    # The name ClsShelter is only available to the transaction script
+    # The name ClsPetOwner is only available to the transaction script
     # The objectID must be retrieved if the intent is to use the class
     # log it for user to recover it, could also store it in another object
-    Log("Class ClsShelter LOID: ", ClsShelter.oid)
+    Log("Class ClsPetOwner LOID: ", ClsPetOwner.oid)
 
     # An instance of the new class can be instantiated
-    classvar = ClsObjVar(ClsShelter)
+    classvar = ClsObjVar(ClsPetOwner)
 
     # initialized with 1 count of asset
     # Shelters and Owners should be instantiated as accounts, but no clear examples exist of how to instantiate / declare one.
     objloid = classvar.new(CMIConst.SPSystemAccount,
-                           "San Mateo Shelter", "123 Main Street, San Mateo, CA",
-                           "This is a description of a nice shelter in San Mateo",
-                           1)
+                           "Marina Smith", "123 Main Street, San Mateo, CA", 1)
     objloid = objloid[0]
-    #objloid1 = objloid[1]
-    Log("ClsShelter Object Instance: ", objloid.oid)
-
-    #Log("ClsShelter Object Instance: ", objloid1.oid)
+    Log("ClsPetOwner Object Instance: ", objloid.oid)
 
     objvar = ClsObjVar(objloid)
 
-    try:
-        # illegal increment the local callcounter variable. callcount is internal only
-        objvar.callcount()
-    except:
-        pass
-
-    #count = objvar.Increment(10)
-    #Log("Increment Count: ", count)
-
     objvar.AddPet("Whiskers1")
-    objvar.AddPet("Sparky")
-    objvar.AddPet("Fluffy")
 
     # make the objvar persistent by inserting it in the account list
     # acctvar.Insert(objvar)    # also sets owner field of objvar
 
-    Log("the pets at shelter ", objvar.GetName(), "are : ", objvar.GetPets())
+    log(objvar.GetName(), " adopted : ", objvar.GetPets())
 
     return True
 
